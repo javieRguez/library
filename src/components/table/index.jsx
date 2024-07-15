@@ -1,10 +1,6 @@
-const Table = ({
-  head,
-  data,
-  handleAction,
-  actions = { lend: false, edit: true, remove: false },
-}) => {
-  const atLeastOneTrue = actions.lend || actions.edit || actions.remove;
+import { TrashIcon } from "@heroicons/react/24/outline";
+
+const Table = ({ head, data, handleAction, actions = { remove: true } }) => {
   return (
     <table className="w-full text-sm text-left">
       <thead className=" text-xs uppercase">
@@ -17,8 +13,8 @@ const Table = ({
               {text}
             </th>
           ))}
-          {atLeastOneTrue ? (
-            <th className="text-center font-medium opacity-80 text-gray-950 px-6 p-4">
+          {actions.remove ? (
+            <th className="font-medium opacity-80 text-gray-950 px-6 p-4">
               Acciones
             </th>
           ) : (
@@ -35,26 +31,13 @@ const Table = ({
                   {dataElement[key]}
                 </td>
               ))}
-              {atLeastOneTrue ? (
-                <td className="px-6 py-4 flex-auto flex-row space-x-4">
-                  <a
-                    className=" font-medium text-blue-600 hover:underline"
-                    onClick={() => handleAction("lend", dataElement)}
-                  >
-                    Prestar
-                  </a>
-                  <a
-                    className=" font-medium text-blue-600 hover:underline"
-                    onClick={() => handleAction("edit", dataElement)}
-                  >
-                    Editar
-                  </a>
-                  <a
-                    className=" font-medium text-blue-600 hover:underline"
+              {actions.remove ? (
+                <td className="px-6 py-4 items-center content-center">
+                  <TrashIcon
+                    aria-hidden="true"
+                    className="h-6 text-sky-600 hover:cursor-pointer hover:text-sky-500"
                     onClick={() => handleAction("delete", dataElement)}
-                  >
-                    Eliminar
-                  </a>
+                  />
                 </td>
               ) : (
                 <></>
