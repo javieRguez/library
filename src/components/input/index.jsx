@@ -6,8 +6,11 @@ const ImputCustom = ({
     name: "input",
     value: "",
     handleChange: (e) => e,
+    extraClass: "",
+    placeholder: "",
   },
 }) => {
+  const classInput = `block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${options.extraClass}`;
   return (
     <Field className="mb-4">
       <Label className="block mb-1 text-sm font-medium text-gray-700">
@@ -15,10 +18,11 @@ const ImputCustom = ({
       </Label>
       <div className="relative">
         <Input
-          className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className={classInput}
           name={options.name}
           value={options.value}
           onChange={options.handleChange}
+          placeholder={options.placeholder}
         />
       </div>
     </Field>

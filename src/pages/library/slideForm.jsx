@@ -47,7 +47,8 @@ const SlideForm = ({
   const handleOnchange = (e, inputName) => {
     setBook({
       ...book,
-      [inputName]: e.target.value,
+      [inputName]:
+        inputName == "gender" ? parseInt(e.target.value) : e.target.value,
     });
   };
   const getDataSelects = async () => {
@@ -169,6 +170,7 @@ const SlideForm = ({
             options={{
               text: "Cancelar",
               handleClick: () => setOpenSlideForm(!openSlideForm),
+              isCancelar: true,
             }}
           />
           <ButtonCustom

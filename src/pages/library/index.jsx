@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/use-api";
-import { Loading, Table, ButtonCustom } from "../../components";
+import {
+  Loading,
+  Table,
+  ButtonCustom,
+  Pagination,
+  SearchInput,
+} from "../../components";
 import { dataMapping, HEAD_TABLE } from "./library.config";
 import SlideForm from "./slideForm";
 import Swal from "sweetalert2";
@@ -9,20 +15,25 @@ const Library = () => {
   const [isAdd, setIsAdd] = useState(true);
   const [openSlideForm, setOpenSlideForm] = useState(false);
   const [books, setBooks] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [queryTerm, setQueryTerm] = useState("");
 
   const { loading, error, executeApi } = useFetch();
 
   useEffect(() => {
     fetchGetBooksData();
-  }, []);
+  }, [page]);
 
   const fetchGetBooksData = async () => {
-    const queryParams = { page: 1, pageSize: 10 };
+    const queryParams = { page, pageSize: 10, queryTerm };
     await executeApi({
       endPoint: "GetBooksPaginationAsync",
       queryParams,
     }).then((data) => {
       const { items, page, totalPages } = data;
+      setTotalPages(totalPages);
+      setPage(page);
       setBooks(items);
     });
   };
@@ -92,10 +103,23 @@ const Library = () => {
           />
         </div>
         <div className="mt-5">
+          <div className="justify-start">
+            <SearchInput
+              options={{
+                setQueryTerm,
+                handleSearchInput: fetchGetBooksData,
+              }}
+            />
+          </div>
           <Table
             head={HEAD_TABLE}
             data={dataMapping(books ?? [])}
             handleAction={handleAction}
+          />
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
           />
         </div>
         <SlideForm
