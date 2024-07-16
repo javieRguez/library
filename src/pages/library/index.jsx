@@ -46,7 +46,6 @@ const Library = () => {
       method: "POST",
     });
   };
-  if (loading) return <Loading />;
 
   const handleAction = async (action, book) => {
     switch (action) {
@@ -78,6 +77,7 @@ const Library = () => {
         break;
     }
   };
+  if (loading) return <Loading />;
 
   return (
     <>
