@@ -1,11 +1,6 @@
 import { useCallback, useState } from "react";
 
 export const useFetch = () => {
-  const [infoState, setInfoState] = useState({
-    loading: true,
-    error: null,
-  });
-
   const executeApi = useCallback(
     async ({ endPoint, method = "GET", body = null, queryParams = {} }) => {
       try {
@@ -29,28 +24,25 @@ export const useFetch = () => {
           },
           body: body ? JSON.stringify(body) : null,
         });
+        if (res) {
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.message);
+          }
 
-        if (!res.ok) throw new Error(res.statusText);
-
-        setInfoState({
-          loading: false,
-          error: null,
-        });
-
-        return await res.json();
+          const contentType = res.headers.get("content-type");
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+            return await res.json();
+          }
+        }
       } catch (error) {
-        setInfoState({
-          loading: false,
-          error: error.message,
-        });
-        return error;
+        throw error;
       }
     },
     []
   );
 
   return {
-    ...infoState,
     executeApi,
   };
 };

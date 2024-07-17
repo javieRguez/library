@@ -5,10 +5,12 @@ const ButtonCustom = ({
     text: "Button",
     handleClick: (e) => e,
     isCancelar: false,
+    disabled: false,
   },
 }) => {
   return (
     <Button
+      disabled={options.disabled}
       onClick={options.handleClick}
       className={`uppercase rounded ${
         options.isCancelar

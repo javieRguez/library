@@ -1,15 +1,13 @@
 import { useState } from "react";
-import { Field, Label, Radio, RadioGroup, Switch } from "@headlessui/react";
+import { Field, Label, Radio, RadioGroup } from "@headlessui/react";
 
-const RadioGroupCustom = ({ items = [], setValue }) => {
-  const [selected, setSelected] = useState(items[0]);
+const RadioGroupCustom = ({ items = [], setValue, value }) => {
   const handleOnchange = (value) => {
     setValue(value);
-    setSelected(value);
   };
   return (
     <RadioGroup
-      value={selected}
+      value={value}
       onChange={handleOnchange}
       aria-label="Server size"
       className="flex flex-row justify-normal space-x-3 mb-3"

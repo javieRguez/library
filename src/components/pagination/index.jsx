@@ -1,6 +1,7 @@
 import React from "react";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  if (totalPages == 0) return <></>;
   return (
     <div className="flex flex-col items-end my-4">
       <span className="mr-8 text-sm text-gray-700 space-x-2">

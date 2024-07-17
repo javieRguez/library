@@ -4,6 +4,7 @@ const SearchInput = ({
   options = {
     setQueryTerm,
     handleSearchInput,
+    queryTerm,
   },
 }) => {
   return (
@@ -36,6 +37,7 @@ const SearchInput = ({
           options={{
             placeholder: "Busca por nombre de libro...",
             handleChange: (e) => options.setQueryTerm(e.target.value),
+            value: options.queryTerm,
           }}
         />
         <button

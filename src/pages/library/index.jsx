@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/use-api";
-import {
-  Loading,
-  Table,
-  ButtonCustom,
-  Pagination,
-  SearchInput,
-} from "../../components";
+import { Table, ButtonCustom, Pagination, SearchInput } from "../../components";
 import { dataMapping, HEAD_TABLE } from "./library.config";
 import SlideForm from "./slideForm";
 import Swal from "sweetalert2";
@@ -19,7 +13,7 @@ const Library = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [queryTerm, setQueryTerm] = useState("");
 
-  const { loading, error, executeApi } = useFetch();
+  const { executeApi } = useFetch();
 
   useEffect(() => {
     fetchGetBooksData();
@@ -77,7 +71,6 @@ const Library = () => {
         break;
     }
   };
-  if (loading) return <Loading />;
 
   return (
     <>
@@ -108,6 +101,7 @@ const Library = () => {
               options={{
                 setQueryTerm,
                 handleSearchInput: fetchGetBooksData,
+                queryTerm,
               }}
             />
           </div>

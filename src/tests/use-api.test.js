@@ -12,16 +12,12 @@ describe("useFetch hook", () => {
     const queryParams = { page: 1, pageSize: 10 };
 
     const response = {
-      data: {
-        items: [],
-        page: 1,
-        totalPages: 1,
-      },
+      items: [],
+      page: 1,
+      totalPages: 1,
     };
     const { result } = renderHook(() => useFetch());
-    const { loading, error, executeApi } = result.current;
-    expect(error).to.be.null;
-    expect(loading).to.be.true;
+    const { executeApi } = result.current;
 
     await waitFor(() => {
       expect(
@@ -39,9 +35,7 @@ describe("useFetch hook", () => {
     const queryParams = { id: "00000000-0000-0000-0000-000000000000" };
 
     const { result } = renderHook(() => useFetch());
-    const { loading, error, executeApi } = result.current;
-    expect(error).to.be.null;
-    expect(loading).to.be.true;
+    const { executeApi } = result.current;
     await waitFor(() => {
       expect(
         executeApi({
@@ -58,9 +52,7 @@ describe("useFetch hook", () => {
     const queryParams = { id: "00000000-0000-0000-0000-000000000000" };
 
     const { result } = renderHook(() => useFetch());
-    const { loading, error, executeApi } = result.current;
-    expect(error).to.be.null;
-    expect(loading).to.be.true;
+    const { executeApi } = result.current;
     await waitFor(() => {
       expect(
         executeApi({
@@ -84,9 +76,7 @@ describe("useFetch hook", () => {
       },
     ];
     const { result } = renderHook(() => useFetch());
-    const { loading, error, executeApi } = result.current;
-    expect(error).to.be.null;
-    expect(loading).to.be.true;
+    const { executeApi } = result.current;
     await waitFor(() => {
       expect(
         executeApi({
@@ -107,9 +97,7 @@ describe("useFetch hook", () => {
       },
     ];
     const { result } = renderHook(() => useFetch());
-    const { loading, error, executeApi } = result.current;
-    expect(error).to.be.null;
-    expect(loading).to.be.true;
+    const { executeApi } = result.current;
     await waitFor(() => {
       expect(
         executeApi({
@@ -131,9 +119,7 @@ describe("useFetch hook", () => {
     };
 
     const { result } = renderHook(() => useFetch());
-    const { loading, error, executeApi } = result.current;
-    expect(error).to.be.null;
-    expect(loading).to.be.true;
+    const { executeApi } = result.current;
     await waitFor(() => {
       expect(
         executeApi({

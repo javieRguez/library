@@ -2,18 +2,18 @@ import { useState, useEffect } from "react";
 import {
   ButtonCustom,
   InputCustom,
-  Loading,
   RadioGroupCustom,
   SelectCustom,
 } from "../../components";
 import { useFetch } from "../../hooks/use-api";
 import { gendersSelect, mappingSelectKeyValue } from "./library.config";
+import Swal from "sweetalert2";
 
 const initialState = {
-  name: "",
-  price: "",
-  description: "",
-  quantity: "",
+  name: null,
+  price: null,
+  description: null,
+  quantity: null,
   gender: 0,
 };
 
@@ -30,13 +30,43 @@ const SlideForm = ({
   const [operation, setOperation] = useState("Prestar");
   const [clientId, setClientId] = useState(null);
   const [bookId, setBookId] = useState(null);
+  const [disabledBtn, setDisabledBtn] = useState(false);
 
-  const { loading, error, executeApi } = useFetch();
+  const { executeApi } = useFetch();
 
   useEffect(() => {
     getDataSelects();
   }, [openSlideForm]);
 
+  const isValid = () => {
+    if (isAdd) {
+      if (!book.name || !book.description || !book.quantity) {
+        SwalRender({
+          title: "Formulario incompleto",
+          type: "warning",
+          text: "Asegurate de llenar todo el formulario.",
+        });
+        return false;
+      }
+      return true;
+    } else {
+      if (!clientId || !bookId) {
+        SwalRender({
+          title: "Formulario incompleto",
+          type: "warning",
+          text: "Asegurate de llenar todo el formulario.",
+        });
+        return false;
+      }
+      return true;
+    }
+  };
+  const afterFetch = () => {
+    setDisabledBtn(false);
+    setOpenSlideForm(false);
+    resetForm();
+    fetchData();
+  };
   const resetForm = () => {
     setBook(initialState);
     setBookId(null);
@@ -56,36 +86,90 @@ const SlideForm = ({
       const clients = await executeApi({
         endPoint: "GetAllClientsAsync",
         method: "GET",
+      }).catch(() => {
+        SwalRender({
+          title: "Error",
+          type: "error",
+          text: "Error al tratar de obtener los clientes.",
+        });
       });
       setItemsClients(clients);
       const books = await executeApi({
         endPoint: "GetAllBooksAsync",
         method: "GET",
+      }).catch(() => {
+        SwalRender({
+          title: "Error",
+          type: "error",
+          text: "Error al tratar de obtener los libros.",
+        });
       });
       setItemsBooks(books);
     }
   };
   const addBookAsync = async () => {
+    setDisabledBtn(true);
     await executeApi({
       endPoint: "AddBookAsync",
       method: "POST",
       body: book,
-    });
-    setOpenSlideForm(false);
-    resetForm();
-    fetchData();
+    })
+      .then(() => {
+        afterFetch();
+        SwalRender({
+          title: "Éxito",
+          type: "success",
+          text: "Libro agregado correctamente.",
+        });
+      })
+      .catch((error) => {
+        afterFetch();
+        SwalRender({
+          title: "Error",
+          type: "error",
+          text: error.message,
+        });
+      });
   };
   const loanOrReturnBookAsync = async () => {
+    setDisabledBtn(true);
     const queryParams = { clientId: clientId, bookId: bookId };
     await executeApi({
       endPoint:
         operation == "Prestar" ? "SaveBookLoanAsync" : "ReturnBookAsync",
       method: "POST",
       queryParams,
+    })
+      .then(() => {
+        afterFetch();
+        SwalRender({
+          title: "Éxito",
+          type: "success",
+          text: `Libro ${
+            operation === "Prestar" ? "prestado" : "devuelto"
+          } correctamente.`,
+        });
+      })
+      .catch((error) => {
+        afterFetch();
+        SwalRender({
+          title: "Error",
+          type: "error",
+          text: error.message,
+        });
+      });
+  };
+
+  const SwalRender = ({
+    title = "Éxito",
+    type = "success",
+    text = "Operación realizada correctamente.",
+  }) => {
+    Swal.fire({
+      icon: type,
+      title,
+      text,
     });
-    setOpenSlideForm(false);
-    resetForm();
-    fetchData();
   };
   return (
     <div
@@ -111,6 +195,7 @@ const SlideForm = ({
                 name: "price",
                 value: book.price,
                 handleChange: (e) => handleOnchange(e, "price"),
+                regex: /^\d*\.?\d*$/,
               }}
             />
             <InputCustom
@@ -127,6 +212,7 @@ const SlideForm = ({
                 name: "quantity",
                 value: book.quantity,
                 handleChange: (e) => handleOnchange(e, "quantity"),
+                regex: /^\d*$/,
               }}
             />
             <SelectCustom
@@ -144,6 +230,7 @@ const SlideForm = ({
             <RadioGroupCustom
               items={["Prestar", "Devolver"]}
               setValue={setOperation}
+              value={operation}
             />
             <SelectCustom
               options={{
@@ -169,15 +256,24 @@ const SlideForm = ({
           <ButtonCustom
             options={{
               text: "Cancelar",
-              handleClick: () => setOpenSlideForm(!openSlideForm),
+              handleClick: () => {
+                resetForm();
+                setOpenSlideForm(!openSlideForm);
+              },
               isCancelar: true,
+              disabled: disabledBtn,
             }}
           />
           <ButtonCustom
             options={{
               text: "Guardar",
+              disabled: disabledBtn,
               handleClick: () =>
-                isAdd ? addBookAsync() : loanOrReturnBookAsync(),
+                isValid()
+                  ? isAdd
+                    ? addBookAsync()
+                    : loanOrReturnBookAsync()
+                  : null,
             }}
           />
         </div>
